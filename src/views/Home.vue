@@ -1,7 +1,10 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <img alt="Logo" src="../assets/logo.png">
+    <!-- <Login /> -->
+    <h3>{{userName}}</h3>
+    <h4>Balance: {{bitCoinAmount}}</h4>
+    <h5>Current BitCoin rate: {{bitCoinRate}}</h5>
   </div>
 </template>
 
@@ -11,6 +14,13 @@ import HelloWorld from '@/components/HelloWorld.vue'
 
 export default {
   name: 'Home',
+  data(){
+      return{
+        userName: 'Dude',
+        bitCoinAmount: 100,
+        bitCoinRate: 0.001
+      }
+    },
   components: {
     HelloWorld
   }
