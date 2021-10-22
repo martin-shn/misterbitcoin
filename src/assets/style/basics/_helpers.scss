@@ -1,0 +1,22 @@
+.flex{
+    display: flex;
+}
+ .column{
+     flex-direction: column;
+ }
+ 
+.clean-list{
+    list-style: none;
+} 
+
+.align-center{
+    align-items: center;
+} 
+
+.justify-center{
+    justify-content: center;
+} 
+
+.wrap{
+    flex-wrap: wrap;
+}

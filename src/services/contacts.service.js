@@ -13,6 +13,7 @@ async function  query(filterBy = '') {
         contacts = await httpService.get(
             "http://www.filltext.com/?rows=40&f={firstName}&l={lastName}&p={phone}&e={email}"
             );
+        contacts.forEach(contact=>contact.imgUrl=`https://robohash.org/${contact.e}?set=set5`)
         }
     // return contacts
     return contacts.filter(contact=>(contact.f +' '+ contact.l).includes(filterBy));
