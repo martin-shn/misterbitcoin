@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Stats from '../views/Stats.vue'
 import Contacts from '../views/Contacts.vue'
 import ContactEdit from '../views/ContactEdit.vue'
+import ContactDetails from '../views/ContactDetails.vue'
 
 Vue.use(VueRouter)
 
@@ -21,7 +22,7 @@ const routes = [
   {
     path: '/contacts/:contactId',
     name: 'Contact-details',
-    component: Stats,
+    component: ContactDetails,
     children:[{
       path: 'edit',
       name: 'Contact-edit',
