@@ -63,6 +63,7 @@ export default {
 h1 {
   text-align: center;
 }
+
 .msg{
   position: fixed;
   bottom: 20px;
