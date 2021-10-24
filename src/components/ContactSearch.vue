@@ -1,6 +1,6 @@
 <template>
   <form class="search flex align-center justify-center">
-    <input type="search" v-model="filterBy" @search.prevent="search" />
+    <input type="search" v-model="filterBy" @input.prevent="search" @search.prevent="search" />
     <button @click.prevent="search">Search</button>
   </form>
 </template>

@@ -8,7 +8,7 @@ async function loadContacts(){
     contacts = _loadDB().contacts;
     if (!contacts) {
         contacts = await dummyData();
-        // contacts = await httpService.get('https://www.filltext.com/?rows=40&_id={index}&f={firstName}&l={lastName}&p={phone}&e={email}');
+        // contacts = await httpService.get('http://www.filltext.com/?rows=40&_id={index}&f={firstName}&l={lastName}&p={phone}&e={email}');
 
         _saveDB();
     }
@@ -17,7 +17,7 @@ async function loadContacts(){
 async function query(filterBy = '') {
     if (!contacts) await loadContacts()
     const regex = new RegExp(filterBy, 'i');
-    return contacts.filter((contact) => regex.test(contact.f + ' ' + contact.l));
+    return contacts.filter((contact) => regex.test(contact.n));
 }
 
 async function getById(contactId) {

@@ -2,7 +2,7 @@
   <div class="about">
     <h1>Contacts</h1>
     <!-- <contact-list :contacts="contactsToShow" /> -->
-    <ContactSearch @search="search" />
+    <contact-search @search="search" />
     <contact-list :contacts="contacts" />
     <div class="add-new-contact" @click="onAdd"></div>
     <div :class="`msg ${this.msg.type}`">{{this.msg.txt}}</div>

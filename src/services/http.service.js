@@ -47,14 +47,14 @@ async function ajax(endpoint, method = 'GET', data = null) {
 }
 
 
-export async function dummyData(){
-    const namesUrl = 'https://randommer.io/api/Name?nameType=fullname&quantity=40'
-    const phoneUrl = 'https://randommer.io/api/Phone/Generate?CountryCode=il&Quantity=40'
+export async function dummyData(len=40){
+    const namesUrl = `https://randommer.io/api/Name?nameType=fullname&quantity=${len}`
+    const phoneUrl = `https://randommer.io/api/Phone/Generate?CountryCode=il&Quantity=${len}`
     
     const names = await _fetch(namesUrl)
     const phones = await _fetch(phoneUrl)
 
-    const contacts = Array(40).fill(null).map((contact,idx)=>(
+    const contacts = Array(len).fill(null).map((contact,idx)=>(
         {
             _id: utilService.makeId(),
             n: names[idx],
