@@ -6,46 +6,25 @@
       <label>Name:</label>
       <h4
         contenteditable
-        id="f"
-        :class="isNew?'new':''"
+        id="n"
+        :class="isNew ? 'new' : ''"
         :autofocus="isNew"
         ref="input"
         @keydown="onKeyDown"
         @blur="onBlur"
-        style="text-align: right"
       >
-        {{ contact.f }}
-      </h4>
-      <h4
-        contenteditable
-        id="l"
-        :class="isNew?'new':''"
-        @keydown="onKeyDown"
-        @blur="onBlur"
-        style="text-align: left"
-      >
-        {{ contact.l }}
+        {{ contact.n }}
       </h4>
     </div>
     <div class="flex align-center">
       <label>Phone:</label>
-      <h4
-        contenteditable
-        id="p"
-        @keydown="onKeyDown"
-        @blur="onBlur"
-      >
+      <h4 contenteditable id="p" @keydown="onKeyDown" @blur="onBlur">
         {{ contact.p }}
       </h4>
     </div>
     <div class="flex align-center">
       <label>Email:</label>
-      <h4
-        contenteditable
-        id="e"
-        @keydown="onKeyDown"
-        @blur="onBlur"
-      >
+      <h4 contenteditable id="e" @keydown="onKeyDown" @blur="onBlur">
         {{ contact.e }}
       </h4>
     </div>
@@ -72,11 +51,11 @@ export default {
       this.contact = contact[0];
     } else {
       this.contact = {
-        f: "",
-        l: "",
+        n: "",
         e: "",
         p: "",
         imgUrl: "",
+        balance: 100,
       };
       this.isNew = true;
     }
@@ -93,39 +72,39 @@ export default {
   },
   methods: {
     focusInput() {
-      this.$refs.input.focus()
+      this.$refs.input.focus();
     },
     onBack() {
       this.$router.push("/contacts");
     },
-    async onDelete(){
-      await contactService.remove(this.contact._id)
-      this.$router.push('/contacts')
+    async onDelete() {
+      if (!this.contact._id) {
+        var id = this.$route.params.contactId;
+        }
+      
+      await contactService.remove(this.contact._id || id);
+      this.$router.push("/contacts");
     },
     async onSave() {
-      console.log(this.contact);
-      if (!this.contact._id) {
-        if (
-          this.contact.f &&
-          this.contact.l &&
-          this.contact.e &&
-          this.contact.p
-        ) {
+      if (!this.contact.n || !this.contact.e || !this.contact.p)
+        this.msg = { txt: "All fields are mandatory", type: "error" };
+      else {
+        console.log(this.contact);
+        var savedContact;
+        if (!this.contact._id) {
           this.contact.imgUrl = `https://robohash.org/${this.contact.e}?set=set5`;
-          const savedContact = await contactService.save(this.contact);
-          this.msg = { txt: "Saved successfully", type: "ok" };
+          savedContact = await contactService.save(this.contact);
         } else {
-          this.msg = { txt: "All fields are mandatory", type: "error" };
+          savedContact = await contactService.update(this.contact);
         }
-      } else {
-        const savedContact = await contactService.update(this.contact);
         this.msg = { txt: "Saved successfully", type: "ok" };
+        this.isChanged = false;
+        this.isNew = false;
       }
-      this.isChanged = false;
       this.isSaved = true;
-      this.isNew = false;
       setTimeout(() => {
         this.isSaved = false;
+        this.$router.push(`/contacts/${savedContact._id}`);
       }, 2000);
     },
     onBlur({ target }) {
@@ -138,21 +117,20 @@ export default {
       }
     },
   },
-  watch:{
-    isNew: function(isNew){
-      if (isNew) this.focusInput()
-    }
-  }
+  watch: {
+    isNew: function (isNew) {
+      if (isNew) this.focusInput();
+    },
+  },
 };
 </script>
 
 <style scoped lang="scss">
 .contact-details {
   row-gap: 10px;
-  .new{
-    text-align: left!important;
+  .new {
     flex-grow: unset;
-    min-width: 50%;
+    width: 100%;
   }
   h4,
   label {

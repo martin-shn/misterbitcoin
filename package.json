@@ -5,12 +5,14 @@
   "scripts": {
     "start": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "deploy": "deploy.sh"
   },
   "dependencies": {
     "axios": "^0.23.0",
     "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
+    "gh-pages": "^2.0.1",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
     "vue-chartjs": "^3.5.1",

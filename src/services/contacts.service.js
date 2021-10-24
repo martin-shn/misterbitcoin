@@ -1,13 +1,15 @@
-import { httpService } from '@/services/http.service.js';
+import { httpService, dummyData } from '@/services/http.service.js';
+import utilService from './utils.js'
 
 const DB = 'BTDB';
 let contacts;
 
 async function loadContacts(){
-    contacts = _loadDB();
+    contacts = _loadDB().contacts;
     if (!contacts) {
-        contacts = await httpService.get('http://www.filltext.com/?rows=40&_id={index}&f={firstName}&l={lastName}&p={phone}&e={email}');
-        contacts.forEach((contact) => (contact.imgUrl = `https://robohash.org/${contact.e}?set=set5`));
+        contacts = await dummyData();
+        // contacts = await httpService.get('https://www.filltext.com/?rows=40&_id={index}&f={firstName}&l={lastName}&p={phone}&e={email}');
+
         _saveDB();
     }
 }
@@ -20,7 +22,7 @@ async function query(filterBy = '') {
 
 async function getById(contactId) {
     if (!contacts) await query()
-    return contacts.filter((contact) => contact._id === +contactId);
+    return contacts.filter((contact) => contact._id === contactId);
 }
 
 function update(updatedContact) {
@@ -28,13 +30,15 @@ function update(updatedContact) {
     const idx = contacts.findIndex((contact) => contact._id === updatedContact._id);
     contacts[idx] = updatedContact;
     _saveDB();
+    return updatedContact;
 }
 
 function save(newContact) {
     loadContacts()
-    const contactToAdd = { ...newContact, _id: new Date() % 1000 };
+    const contactToAdd = { ...newContact, _id: utilService.makeId() };
     contacts.unshift(contactToAdd);
     _saveDB();
+    return contactToAdd;
 }
 
 function remove(contactId){
@@ -50,7 +54,7 @@ function _saveDB() {
 
 function _loadDB() {
     const tempDB = localStorage.getItem(DB);
-    if (tempDB) return JSON.parse(tempDB).contacts;
+    if (tempDB) return JSON.parse(tempDB);
     return null;
 }
 

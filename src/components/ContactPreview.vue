@@ -2,7 +2,7 @@
   <div class="contact-preview flex align-center" @click="onContact">
     <div class="avatar"><img :src="contact.imgUrl" /></div>
     <div class="contact-details">
-      {{ contact.f + " " + contact.l }}
+      {{ contact.n }}
     </div>
   </div>
 </template>
@@ -13,7 +13,7 @@ export default {
   props: ["contact"],
   methods: {
     onContact() {
-        this.$router.push(`/contacts/${this.contact._id}`)
+      this.$router.push(`/contacts/${this.contact._id}`);
     },
   },
 };
@@ -26,6 +26,7 @@ export default {
   margin-bottom: 5px;
   cursor: pointer;
   border-radius: 25px 5px 5px 25px;
+  transition: 0.2s;
   &:hover {
     transition: 0.2s;
     background-color: rgb(35, 148, 148);
