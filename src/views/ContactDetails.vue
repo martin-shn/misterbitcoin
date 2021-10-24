@@ -1,5 +1,5 @@
 <template>
-  <div class="contact-details flex column align-center">
+  <div v-if="contact" class="contact-details flex column align-center">
     <h1>Contact Details</h1>
     <img :src="contact.imgUrl" />
     <div class="flex align-center">
@@ -35,16 +35,26 @@
       <button @click="onDelete">Delete</button>
     </div>
     <div v-if="isSaved" :class="`msg ${this.msg.type}`">{{ this.msg.txt }}</div>
+    <transfer-fund
+      v-if="isShow && !isNew"
+      :user="contact"
+      @transfer="loadContact"
+    />
+    <move-list v-if="contact && !isNew" :contact="contact" :loggedInUser="loggedInUser" />
   </div>
 </template>
 
 
 <script>
 import contactService from "@/services/contacts.service";
+import TransferFund from "@/components/TransferFund.vue";
+import userService from "@/services/user.service.js";
+import MoveList from "../components/MoveList.vue";
 
 export default {
   name: "ContactDetails",
   async created() {
+    this.loggedInUser = userService.getLoggedInUser();
     const { contactId } = this.$route.params;
     if (contactId !== "new") {
       const contact = await contactService.getById(contactId);
@@ -63,14 +73,24 @@ export default {
   },
   data() {
     return {
-      contact: {},
+      contact: null,
       isChanged: false,
       isSaved: false,
       isNew: false,
       msg: {},
+      loggedInUser: null,
     };
   },
+
+  computed: {
+    isShow() {
+      return this.loggedInUser.balance > 0;
+    },
+  },
   methods: {
+    loadContact(){
+      this.loggedInUser = userService.getLoggedInUser()
+    },
     focusInput() {
       this.$refs.input.focus();
     },
@@ -80,8 +100,8 @@ export default {
     async onDelete() {
       if (!this.contact._id) {
         var id = this.$route.params.contactId;
-        }
-      
+      }
+
       await contactService.remove(this.contact._id || id);
       this.$router.push("/contacts");
     },
@@ -121,6 +141,10 @@ export default {
     isNew: function (isNew) {
       if (isNew) this.focusInput();
     },
+  },
+  components: {
+    TransferFund,
+    MoveList,
   },
 };
 </script>

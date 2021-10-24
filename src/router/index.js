@@ -1,10 +1,14 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import Login from '../views/Login.vue'
+import Signup from '../views/Signup.vue'
 import Stats from '../views/Stats.vue'
 import Contacts from '../views/Contacts.vue'
 import ContactEdit from '../views/ContactEdit.vue'
 import ContactDetails from '../views/ContactDetails.vue'
+import userService from "@/services/user.service.js";
+
 
 Vue.use(VueRouter)
 
@@ -13,6 +17,17 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home
+    
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  {
+    path: '/signup',
+    name: 'Signup',
+    component: Signup
   },
   {
     path: '/stats',
@@ -23,7 +38,7 @@ const routes = [
     path: '/contacts/:contactId',
     name: 'Contact-details',
     component: ContactDetails,
-    children:[{
+    children: [{
       path: 'edit',
       name: 'Contact-edit',
       component: ContactEdit
@@ -47,3 +62,23 @@ const router = new VueRouter({
 })
 
 export default router
+
+router.beforeEach((to, from, next) => {
+  if (to.path.includes('/login')) {
+    const user = userService.getLoggedInUser();
+    if (user) next('/')
+    else next();
+
+  }
+  if (to.path.includes('/signup')) {
+    next();
+  }
+
+  else if (to.path.includes('/')) {
+    const user = userService.getLoggedInUser();
+    if (!user) next('/login');
+    else next();
+  }
+
+  else next();
+});
