@@ -3,8 +3,8 @@
     <img alt="Logo" src="../assets/logo.png" />
     <template v-if="loggedInUser">
       <h3>{{ loggedInUser.name }}</h3>
-      <h4>Balance: {{ loggedInUser.balance }} ₿</h4>
-      <h5>Current BitCoin rate: {{ bitCoinRate }}</h5>
+      <h4>Balance: {{ (loggedInUser.balance/bitCoinRate).toLocaleString('en-GB',{ maximumFractionDigits: 2 })}}$ = {{ loggedInUser.balance }} ₿</h4>
+      <h5>Current BitCoin rate: 1$ = {{ bitCoinRate }}₿</h5>
       <move-list :loggedInUser="loggedInUser" />
     </template>
   </div>

@@ -3,7 +3,7 @@
     <h4>Transfer coins to {{ user.n }}:</h4>
     <div class="flex align-center">
       <label for="amount">Amount:</label>
-      <input id="amount" type="number" v-model="amount" />
+      <input id="amount" type="number" v-model.number="amount" />
       <button @click="onTransfer">Transfer</button>
     </div>
   </section>
@@ -11,6 +11,7 @@
 
 <script>
 import userService from "@/services/user.service.js";
+import {showMsg} from "@/services/eventBus.service";
 
 export default {
   data() {
@@ -20,9 +21,14 @@ export default {
   },
   props: ["user"],
   methods: {
-    onTransfer() {
-        userService.transferFund(+this.amount,this.user)
-        this.$emit('transfer')
+    async onTransfer() {
+      try{
+        await userService.transferFund(this.amount,this.user)
+        showMsg(this.amount+' coins transferred to '+this.user.n+' successfully', 'ok')
+        this.$store.dispatch({type:'getLoggedInUser'})
+        }catch(err){
+          showMsg(err, 'error')
+        }
     },
   },
 };

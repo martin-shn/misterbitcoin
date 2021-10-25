@@ -63,9 +63,9 @@ const router = new VueRouter({
 
 export default router
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   if (to.path.includes('/login')) {
-    const user = userService.getLoggedInUser();
+    const user = await userService.getLoggedInUser();
     if (user) next('/')
     else next();
 
@@ -75,7 +75,8 @@ router.beforeEach((to, from, next) => {
   }
 
   else if (to.path.includes('/')) {
-    const user = userService.getLoggedInUser();
+    const user = await userService.getLoggedInUser();
+    
     if (!user) next('/login');
     else next();
   }

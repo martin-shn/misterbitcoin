@@ -5,7 +5,6 @@
     props:["data"],
     extends: Bar,
     created(){
-        console.log('data:', this.data);
     },
     data () {
       return {

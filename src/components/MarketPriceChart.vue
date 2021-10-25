@@ -5,7 +5,6 @@
     props:["data"],
     extends: Line,
     created(){
-        console.log('data:', this.data);
     },
     data () {
       return {

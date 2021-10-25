@@ -3,9 +3,8 @@
     <h1>Contacts</h1>
     <!-- <contact-list :contacts="contactsToShow" /> -->
     <contact-search @search="search" />
-    <contact-list :contacts="contacts" />
+    <contact-list :contacts="filteredContacts" />
     <div class="add-new-contact" @click="onAdd"></div>
-    <div :class="`msg ${this.msg.type}`">{{this.msg.txt}}</div>
   </div>
 </template>
 
@@ -14,29 +13,23 @@
 import ContactList from "@/components/ContactList";
 import contactService from "@/services/contacts.service.js";
 import ContactSearch from "@/components/ContactSearch";
+import eventBus from "@/services/eventBus.service";
 
 export default {
   async created() {
-    this.contacts = await contactService.query();
+    await this.$store.dispatch({type:'setContacts'})
+    this.filteredContacts=this.contacts
+    
   },
   data() {
     return {
-      contacts: [],
-      msg:{}
+      filteredContacts:null
     };
   },
   methods: {
-    showMsg(msg){
-      console.log('msg',msg);
-      this.msg=msg
-      setTimeout(()=>{
-        this.msg={}
-      },5000)
-    },
-    async search(filterBy) {
-      console.log("filterBy : ", filterBy);
-
-      this.contacts = await contactService.query(filterBy);
+    search(filterBy) {
+      const regex = new RegExp(filterBy, 'i');
+      this.filteredContacts = this.contacts.filter(contact=>regex.test(contact.n))
     },
     onAdd(){
       this.$router.push('/contacts/new');
@@ -47,14 +40,11 @@ export default {
     ContactSearch,
   },
   computed: {
-    // contactsToShow() {
-    // return this.contacts;
-    // },
+    contacts(){
+      return this.$store.getters.getContacts;
+    }
   },
   watch:{
-    contacts: function(){
-      this.showMsg({txt:'Contacts updated successfully', type:'ok'})
-    }
   }
 };
 </script>
@@ -64,31 +54,6 @@ h1 {
   text-align: center;
 }
 
-.msg{
-  position: fixed;
-  bottom: 20px;
-  left: -240px;
-  max-width:fit-content;
-  min-width: fit-content;
-  height: 50px;
-  display: flex;
-  padding: 0 15px;
-  align-items: center;
-  justify-content: center;
-  border-radius: 3px;
-  border: 1px solid slategray;
-  transition: .5s;
-  &.ok{
-    transition: .5s;
-    left: 10px;
-    background-color: lightgreen;
-  }
-  &.error{
-    transition: .5s;
-    left: 10px;
-    background-color: lightcoral;
-  }
-}
 .add-new-contact {
   position: fixed;
   bottom: 20px;

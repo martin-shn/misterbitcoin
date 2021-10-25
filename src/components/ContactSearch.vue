@@ -15,8 +15,6 @@ export default {
   },
   methods: {
     search() {
-      console.log("sending filterBy : ", this.filterBy);
-
       this.$emit("search", this.filterBy);
     },
   },

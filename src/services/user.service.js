@@ -32,11 +32,15 @@ function login(cred) {
     users = JSON.parse(users)
     const user = users.filter(user => {
         return user.email === cred.email && user.password === cred.password
-    })
+    })[0]
 
     if (user) {
         sessionStorage.setItem('loggedInUser', JSON.stringify(user))
-    } else sessionStorage.clear('loggedInUser')
+        return user
+    } else {
+        sessionStorage.clear('loggedInUser')
+        return null
+    }
 
 }
 
@@ -44,7 +48,7 @@ function signup(user) {
     let users = localStorage.getItem('users')
     if (!users) init()
     users = JSON.parse(users)
-    users.push({ ...user, balance: 100, isAdmin: false })
+    users.push({ ...user, balance: 100, isAdmin: false, moves:[] })
     localStorage.setItem('users', JSON.stringify(users))
 }
 
@@ -54,19 +58,19 @@ function logout() {
 
 function getLoggedInUser() {
     const loggedInUser = sessionStorage.getItem('loggedInUser')
-    return loggedInUser ? JSON.parse(loggedInUser)[0] : null
+    return loggedInUser ? JSON.parse(loggedInUser) : null
 }
 
 
 async function transferFund(amount, to) {
     const loggedInUser = getLoggedInUser();
-    if (loggedInUser.balance < amount || amount <= 0) return
+    if (loggedInUser.balance < amount || amount <= 0) throw 'Amount is invalid'
     to.balance += amount
     await contactService.update(to)
     loggedInUser.balance -= amount
-    loggedInUser.moves.push({ amount, date: Date.now(), to:to._id,id:utilService.makeId() })
+    loggedInUser.moves.push({ amount, date: Date.now(), to:{id:to._id, name: to.n},id:utilService.makeId() })
     update(loggedInUser)
-    sessionStorage.setItem('loggedInUser', JSON.stringify([loggedInUser]))
+    sessionStorage.setItem('loggedInUser', JSON.stringify(loggedInUser))
 
 }
 
