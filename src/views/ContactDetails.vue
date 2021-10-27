@@ -12,21 +12,15 @@
         ref="input"
         @keydown="onKeyDown"
         @blur="onBlur"
-      >
-        {{ contact.n }}
-      </h4>
+      >{{ contact.n }}</h4>
     </div>
     <div class="flex align-center">
       <label>Phone:</label>
-      <h4 contenteditable id="p" @keydown="onKeyDown" @blur="onBlur">
-        {{ contact.p }}
-      </h4>
+      <h4 contenteditable id="p" @keydown="onKeyDown" @blur="onBlur">{{ contact.p }}</h4>
     </div>
     <div class="flex align-center">
       <label>Email:</label>
-      <h4 contenteditable id="e" @keydown="onKeyDown" @blur="onBlur">
-        {{ contact.e }}
-      </h4>
+      <h4 contenteditable id="e" @keydown="onKeyDown" @blur="onBlur">{{ contact.e }}</h4>
     </div>
 
     <div class="actions flex justify-center">
@@ -35,35 +29,32 @@
       <button v-if="!isNew" @click="onDelete">Delete</button>
     </div>
     <div v-if="isSaved" :class="`msg ${this.msg.type}`">{{ this.msg.txt }}</div>
-    <transfer-fund
-      v-if="isShow && !isNew && contact._id"
-      :user="contact"
-    />
+    <transfer-fund v-if="isShow && !isNew && contact._id" :user="contact" />
     <move-list v-if="contact && !isNew" :contact="contact" :loggedInUser="loggedInUser" />
   </div>
 </template>
 
 
 <script>
-import contactService from "@/services/contacts.service";
-import TransferFund from "@/components/TransferFund.vue";
-import userService from "@/services/user.service.js";
-import MoveList from "../components/MoveList.vue";
-import {showMsg} from "@/services/eventBus.service"
+import contactService from '@/services/contacts.service';
+import TransferFund from '@/components/TransferFund.vue';
+import userService from '@/services/user.service.js';
+import MoveList from '../components/MoveList.vue';
+import { showMsg } from '@/services/eventBus.service';
 
 export default {
-  name: "ContactDetails",
+  name: 'ContactDetails',
   async mounted() {
     const { contactId } = this.$route.params;
-    if (contactId !== "new") {
+    if (contactId !== 'new') {
       const contact = await contactService.getById(contactId);
-      this.contact = contact[0];  
+      this.contact = contact[0];
     } else {
       this.contact = {
-        n: "",
-        e: "",
-        p: "",
-        imgUrl: "",
+        n: '',
+        e: '',
+        p: '',
+        imgUrl: '',
         balance: 100,
       };
       this.isNew = true;
@@ -82,77 +73,75 @@ export default {
 
   computed: {
     isShow() {
-      return this.loggedInUser?this.loggedInUser.balance > 0:false;
+      return this.loggedInUser.balance > 0;
     },
-    loggedInUser(){
-      return this.$store.getters.loggedInUser
-      },
-    newContact(){
-      return this.isNew
+    loggedInUser() {
+      return this.$store.getters.loggedInUser;
+    },
+    newContact() {
+      return this.isNew;
     },
   },
-  watch:{
-    newContact:function(){
-      setTimeout(async ()=>{
+  watch: {
+    newContact() {
+      setTimeout(async () => {
         const { contactId } = this.$route.params;
-        if (contactId !== "new") {
+        if (contactId !== 'new') {
           const contact = await contactService.getById(contactId);
           this.contact = contact[0];
-          }
-      },0)
-    }
+        }
+      }, 0);
+    },
   },
   methods: {
     focusInput() {
-      setTimeout(()=>{
+      setTimeout(() => {
         this.$refs.input.focus();
-      },0)
-      
+      }, 0);
     },
     onBack() {
-      this.$router.push("/contacts");
+      this.$router.push('/contacts');
     },
     async onDelete() {
       if (!this.contact._id) {
         var id = this.$route.params.contactId;
       }
-      await this.$store.dispatch({type:'remove', id:this.contact._id||id})
-      showMsg('Contact removed', 'error')
-      this.$router.push("/contacts");
+      await this.$store.dispatch({ type: 'remove', id: this.contact._id || id });
+      showMsg('Contact removed', 'error');
+      this.$router.push('/contacts');
     },
     async onSave() {
       this.isSaved = false;
       if (!this.contact.n || !this.contact.e || !this.contact.p)
-        this.msg = { txt: "All fields are mandatory", type: "error" };
+        this.msg = { txt: 'All fields are mandatory', type: 'error' };
       else {
         var savedContact;
         if (!this.contact._id) {
           this.contact.imgUrl = `https://robohash.org/${this.contact.e}?set=set5`;
-          await this.$store.dispatch({type:'save', contact:this.contact});
-          savedContact = this.$store.getters.getCurrContact
-          showMsg('Contact added', 'ok')
+          await this.$store.dispatch({ type: 'save', contact: this.contact });
+          savedContact = this.$store.getters.currContact;
+          showMsg('Contact added', 'ok');
           this.$router.push(`/contacts/${savedContact._id}`);
         } else {
-          await this.$store.dispatch({type:'save', contact:this.contact});
-          savedContact = this.contact
-          showMsg('Contact updated', 'ok')
+          await this.$store.dispatch({ type: 'save', contact: this.contact });
+          savedContact = this.contact;
+          showMsg('Contact updated', 'ok');
         }
         this.isChanged = false;
         this.isNew = false;
       }
 
       this.isSaved = true;
-      setTimeout(()=>{
+      setTimeout(() => {
         this.isSaved = false;
-      },5000)
-      
+      }, 5000);
     },
     onBlur({ target }) {
       this.isChanged = this.contact[target.id] !== target.innerText;
       this.contact = { ...this.contact, [target.id]: target.innerText };
     },
     onKeyDown(ev) {
-      if (ev.key === "Enter") {
+      if (ev.key === 'Enter') {
         ev.preventDefault();
       }
     },

@@ -1,16 +1,15 @@
 <template>
-  <nav class="nav flex align-center">
-    <div class="menu flex align-center">
+  <header class="nav flex align-center">
+    <nav class="menu flex align-center">
       <router-link to="/">Home</router-link>
       <router-link to="/contacts">Contacts</router-link>
       <router-link to="/stats">Statistics</router-link>
-    </div>
+    </nav>
     <button v-if="loggedInUser" @click="onLogout">Logout</button>
-  </nav>
+  </header>
 </template>
 
 <script>
-import userService from "@/services/user.service.js";
 
 export default {
   data() {

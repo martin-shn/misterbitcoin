@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div class="app">
     <app-header v-if="loggedInUser" @logout="onLogout" :loggedInUser="loggedInUser" />
     <router-view />
     <div :class="`msg ${this.msg.type}`">{{ this.msg.txt }}</div>
@@ -21,7 +21,7 @@ export default {
 
   methods: {
     async onLogout() {
-      this.$store.dispatch({type: 'logout'});
+      await this.$store.dispatch({type: 'logout'});
       showMsg('Logged out. See you soon', 'ok')
       this.$router.push("/login");
     },
@@ -29,8 +29,9 @@ export default {
   },
 
   async created() {
-    this.$store.dispatch({type:'getLoggedInUser'})
-    this.$store.dispatch({type:'setContacts'})
+    this.$store.dispatch({type:'loadLoggedInUser'})
+    this.$store.dispatch({type:'loadContacts'})
+    this.$store.dispatch({type:'loadBitcoinRate'})
 
     eventBus.$on("msg", (msg) => {
       this.msg = msg;

@@ -1,51 +1,43 @@
 <template>
-  <div class="about">
+  <section class="contacts">
     <h1>Contacts</h1>
-    <!-- <contact-list :contacts="contactsToShow" /> -->
-    <contact-search @search="search" />
+    <contact-search @search="setFilter" />
     <contact-list :contacts="filteredContacts" />
     <div class="add-new-contact" @click="onAdd"></div>
-  </div>
+  </section>
 </template>
 
 
 <script>
-import ContactList from "@/components/ContactList";
-import contactService from "@/services/contacts.service.js";
-import ContactSearch from "@/components/ContactSearch";
-import eventBus from "@/services/eventBus.service";
+import ContactList from '@/components/ContactList';
+import ContactSearch from '@/components/ContactSearch';
 
 export default {
-  async created() {
-    await this.$store.dispatch({type:'setContacts'})
-    this.filteredContacts=this.contacts
-    
-  },
-  data() {
-    return {
-      filteredContacts:null
-    };
-  },
-  methods: {
-    search(filterBy) {
-      const regex = new RegExp(filterBy, 'i');
-      this.filteredContacts = this.contacts.filter(contact=>regex.test(contact.n))
-    },
-    onAdd(){
-      this.$router.push('/contacts/new');
-    }
-  },
   components: {
     ContactList,
     ContactSearch,
   },
-  computed: {
-    contacts(){
-      return this.$store.getters.getContacts;
-    }
+  data() {
+    return {
+      filterBy: null,
+    };
   },
-  watch:{
-  }
+  methods: {
+    onAdd() {
+      this.$router.push('/contacts/new');
+    },
+    setFilter(filterBy) {
+      this.filterBy = filterBy;
+    },
+  },
+  computed: {
+    filteredContacts() {
+      const contacts = this.$store.getters.contacts;
+      if (!this.filterBy) return contacts;
+      const regex = new RegExp(this.filterBy, 'i');
+      return contacts.filter((contact) => regex.test(contact.n));
+    },
+  },
 };
 </script>
 
@@ -70,16 +62,16 @@ h1 {
   justify-content: center;
   cursor: pointer;
   &::before {
-    content: "+";
+    content: '+';
     height: 100%;
     line-height: 40px;
     font-size: 50px;
     text-shadow: 0 0 9px #cccaca;
   }
-  &:hover{
+  &:hover {
     transition: 2s;
     box-shadow: inset 0 0 5px 2px #373737;
-    &::before{
+    &::before {
       text-shadow: 0 0 3px #b4b4b4;
     }
   }

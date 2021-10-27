@@ -1,5 +1,5 @@
 <template>
-  <section class="transfer-funds flex column">
+  <section class="transfer-fund flex column">
     <h4>Transfer coins to {{ user.n }}:</h4>
     <div class="flex align-center">
       <label for="amount">Amount:</label>
@@ -19,13 +19,13 @@ export default {
       amount: 0,
     };
   },
-  props: ["user"],
+  props: ["user"], // contact
   methods: {
     async onTransfer() {
       try{
-        await userService.transferFund(this.amount,this.user)
+        await userService.transferFund(this.amount,{...this.user})
         showMsg(this.amount+' coins transferred to '+this.user.n+' successfully', 'ok')
-        this.$store.dispatch({type:'getLoggedInUser'})
+        this.$store.dispatch({type:'loadLoggedInUser'})
         }catch(err){
           showMsg(err, 'error')
         }
@@ -35,7 +35,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.transfer-funds{
+.transfer-fund{
     background-color: rgb(148, 176, 204);
     padding: 25px 10px;
     margin-top: 25px;
