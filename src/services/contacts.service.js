@@ -5,7 +5,7 @@ const DB = 'BTDB';
 let contacts;
 
 async function loadContacts(){
-    contacts = _loadDB().contacts;
+    contacts = _loadDB()?.contacts;
     if (!contacts) {
         contacts = await dummyData();
         // contacts = await httpService.get('http://www.filltext.com/?rows=40&_id={index}&f={firstName}&l={lastName}&p={phone}&e={email}');

@@ -41,6 +41,7 @@ export default {
 <style scoped lang="scss">
 .move-list {
   width: 100%;
+  box-sizing: border-box;
   h5 {
     margin: 5px 0;
   }
@@ -51,10 +52,9 @@ export default {
     color: #333;
     background-color: lightgreen;
     padding: 10px;
-    border-radius: 2px;
+    border-radius: 3px;
     border: 1px solid #333;
-    margin-bottom: 5px;
-    width: 100%;
+    margin: 0 10px 5px;
   }
 }
 </style>

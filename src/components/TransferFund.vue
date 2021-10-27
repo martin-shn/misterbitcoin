@@ -38,10 +38,11 @@ export default {
 .transfer-fund{
     background-color: rgb(148, 176, 204);
     padding: 25px 10px;
-    margin-top: 25px;
+    margin: 25px 10px 0;
     border-radius: 2px;
-    width: 100%;
+    width: calc(100% - 22px);
     align-items: center;
+    box-sizing: border-box;
     h4{
         text-align: center;
         margin-top: 0;
@@ -59,6 +60,12 @@ export default {
     &>div{
         height: 33px;
         gap: 10px;
+        width: 100%;
+        justify-content: center;
+        &>input{
+          flex-grow: 1;
+          width: 0px;
+        }
     }
 }
 </style>
