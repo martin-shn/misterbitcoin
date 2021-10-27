@@ -8,7 +8,6 @@
         contenteditable
         id="n"
         :class="isNew ? 'new' : ''"
-        :autofocus="isNew"
         ref="input"
         @keydown="onKeyDown"
         @blur="onBlur"
@@ -95,9 +94,9 @@ export default {
   },
   methods: {
     focusInput() {
-      setTimeout(() => {
-        this.$refs.input.focus();
-      }, 0);
+      this.$nextTick(() => {
+          this.$refs.input.focus();
+      })
     },
     onBack() {
       this.$router.push('/contacts');
