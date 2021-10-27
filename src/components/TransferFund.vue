@@ -40,6 +40,8 @@ export default {
     padding: 25px 10px;
     margin-top: 25px;
     border-radius: 2px;
+    width: 100%;
+    align-items: center;
     h4{
         text-align: center;
         margin-top: 0;

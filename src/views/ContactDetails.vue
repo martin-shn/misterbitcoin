@@ -1,8 +1,11 @@
 <template>
-  <div v-if="contact" class="contact-details flex column align-center">
+  <div
+    v-if="contact"
+    class="contact-details-container flex column align-center"
+  >
     <h1>Contact Details</h1>
     <img :src="contact.imgUrl" />
-    <div class="flex align-center">
+    <div class="contact-details flex align-center justify-center">
       <label>Name:</label>
       <h4
         contenteditable
@@ -11,15 +14,21 @@
         ref="input"
         @keydown="onKeyDown"
         @blur="onBlur"
-      >{{ contact.n }}</h4>
+      >
+        {{ contact.n }}
+      </h4>
     </div>
-    <div class="flex align-center">
+    <div class="flex align-center justify-center">
       <label>Phone:</label>
-      <h4 contenteditable id="p" @keydown="onKeyDown" @blur="onBlur">{{ contact.p }}</h4>
+      <h4 contenteditable id="p" @keydown="onKeyDown" @blur="onBlur">
+        {{ contact.p }}
+      </h4>
     </div>
-    <div class="flex align-center">
+    <div class="flex align-center justify-center">
       <label>Email:</label>
-      <h4 contenteditable id="e" @keydown="onKeyDown" @blur="onBlur">{{ contact.e }}</h4>
+      <h4 contenteditable id="e" @keydown="onKeyDown" @blur="onBlur">
+        {{ contact.e }}
+      </h4>
     </div>
 
     <div class="actions flex justify-center">
@@ -29,31 +38,31 @@
     </div>
     <div v-if="isSaved" :class="`msg ${this.msg.type}`">{{ this.msg.txt }}</div>
     <transfer-fund v-if="isShow && !isNew && contact._id" :user="contact" />
-    <move-list v-if="contact && !isNew" :contact="contact" :loggedInUser="loggedInUser" />
+    <move-list v-if="contact && !isNew" :contact="contact" />
   </div>
 </template>
 
 
 <script>
-import contactService from '@/services/contacts.service';
-import TransferFund from '@/components/TransferFund.vue';
-import userService from '@/services/user.service.js';
-import MoveList from '../components/MoveList.vue';
-import { showMsg } from '@/services/eventBus.service';
+import contactService from "@/services/contacts.service";
+import TransferFund from "@/components/TransferFund.vue";
+import userService from "@/services/user.service.js";
+import MoveList from "../components/MoveList.vue";
+import { showMsg } from "@/services/eventBus.service";
 
 export default {
-  name: 'ContactDetails',
+  name: "ContactDetails",
   async mounted() {
     const { contactId } = this.$route.params;
-    if (contactId !== 'new') {
+    if (contactId !== "new") {
       const contact = await contactService.getById(contactId);
       this.contact = contact[0];
     } else {
       this.contact = {
-        n: '',
-        e: '',
-        p: '',
-        imgUrl: '',
+        n: "",
+        e: "",
+        p: "",
+        imgUrl: "",
         balance: 100,
       };
       this.isNew = true;
@@ -85,7 +94,7 @@ export default {
     newContact() {
       setTimeout(async () => {
         const { contactId } = this.$route.params;
-        if (contactId !== 'new') {
+        if (contactId !== "new") {
           const contact = await contactService.getById(contactId);
           this.contact = contact[0];
         }
@@ -95,36 +104,39 @@ export default {
   methods: {
     focusInput() {
       this.$nextTick(() => {
-          this.$refs.input.focus();
-      })
+        this.$refs.input.focus();
+      });
     },
     onBack() {
-      this.$router.push('/contacts');
+      this.$router.push("/contacts");
     },
     async onDelete() {
       if (!this.contact._id) {
         var id = this.$route.params.contactId;
       }
-      await this.$store.dispatch({ type: 'remove', id: this.contact._id || id });
-      showMsg('Contact removed', 'error');
-      this.$router.push('/contacts');
+      await this.$store.dispatch({
+        type: "remove",
+        id: this.contact._id || id,
+      });
+      showMsg("Contact removed", "error");
+      this.$router.push("/contacts");
     },
     async onSave() {
       this.isSaved = false;
       if (!this.contact.n || !this.contact.e || !this.contact.p)
-        this.msg = { txt: 'All fields are mandatory', type: 'error' };
+        this.msg = { txt: "All fields are mandatory", type: "error" };
       else {
         var savedContact;
         if (!this.contact._id) {
           this.contact.imgUrl = `https://robohash.org/${this.contact.e}?set=set5`;
-          await this.$store.dispatch({ type: 'save', contact: this.contact });
+          await this.$store.dispatch({ type: "save", contact: this.contact });
           savedContact = this.$store.getters.currContact;
-          showMsg('Contact added', 'ok');
+          showMsg("Contact added", "ok");
           this.$router.push(`/contacts/${savedContact._id}`);
         } else {
-          await this.$store.dispatch({ type: 'save', contact: this.contact });
+          await this.$store.dispatch({ type: "save", contact: this.contact });
           savedContact = this.contact;
-          showMsg('Contact updated', 'ok');
+          showMsg("Contact updated", "ok");
         }
         this.isChanged = false;
         this.isNew = false;
@@ -140,7 +152,7 @@ export default {
       this.contact = { ...this.contact, [target.id]: target.innerText };
     },
     onKeyDown(ev) {
-      if (ev.key === 'Enter') {
+      if (ev.key === "Enter") {
         ev.preventDefault();
       }
     },
@@ -153,7 +165,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.contact-details {
+.contact-details-container {
   row-gap: 10px;
   .new {
     flex-grow: unset;
@@ -176,10 +188,13 @@ export default {
   img {
     width: 80%;
     max-width: 300px;
+    outline: 1px solid rgb(58, 58, 58);
   }
   & > div {
-    display: flex;
-    width: 300px;
+    width: 100%;
+    & > h4 {
+      max-width: calc(300px - 1ch - 50px - 10px);
+    }
     & > label {
       min-width: 50px;
     }

@@ -1,11 +1,15 @@
 <template>
-  <ul v-if="moves.length" class="move-list clean-list">
+  <ul v-if="moves.length" class="move-list clean-list flex column">
     <h2>Your Moves</h2>
-    <li v-for="transfer in moves" :key="transfer.id">
+    <li class="flex align-center justify-center" v-for="transfer in moves" :key="transfer.id">
       <div>
-        <h5>At: {{ new Date(transfer.date).toLocaleString('en-GB') }}</h5>
-        <h5 v-if="!contact">To: {{transfer.to.name}}</h5>
-        <h5>Amount: {{ transfer.amount }}₿ ({{ (transfer.amount / bitcoinRate).toFixed(2) }}$)</h5>
+        <h5>At: {{ new Date(transfer.date).toLocaleString("en-GB") }}</h5>
+        <h5 v-if="!contact">To: {{ transfer.to.name }}</h5>
+        <h5>
+          Amount: {{ transfer.amount }}₿ ({{
+            (transfer.amount / bitcoinRate).toFixed(2)
+          }}$)
+        </h5>
       </div>
     </li>
   </ul>
@@ -13,7 +17,7 @@
 
 <script>
 export default {
-  props: ['contact'],
+  props: ["contact"],
   computed: {
     loggedInUser() {
       return this.$store.getters.loggedInUser;
@@ -25,18 +29,18 @@ export default {
       if (!this.contact) {
         moves.splice(3);
       }
-      return moves
+      return moves;
     },
-    bitcoinRate(){
-      return this.$store.getters.bitcoinRate
-    }
+    bitcoinRate() {
+      return this.$store.getters.bitcoinRate;
+    },
   },
 };
 </script>
 
 <style scoped lang="scss">
 .move-list {
-  width: 346px;
+  width: 100%;
   h5 {
     margin: 5px 0;
   }
@@ -50,6 +54,7 @@ export default {
     border-radius: 2px;
     border: 1px solid #333;
     margin-bottom: 5px;
+    width: 100%;
   }
 }
 </style>
