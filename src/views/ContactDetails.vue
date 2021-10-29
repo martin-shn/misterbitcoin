@@ -14,19 +14,20 @@
         ref="input"
         @keydown="onKeyDown"
         @blur="onBlur"
+        @click="setFocus($event)"
       >
         {{ contact.n }}
       </h4>
     </div>
     <div class="flex align-center justify-center">
       <label>Phone:</label>
-      <h4 contenteditable id="p" @keydown="onKeyDown" @blur="onBlur">
+      <h4 contenteditable id="p" ref="phone" @keydown="onKeyDown" @blur="onBlur" @click="setFocus($event)">
         {{ contact.p }}
       </h4>
     </div>
     <div class="flex align-center justify-center">
       <label>Email:</label>
-      <h4 contenteditable id="e" @keydown="onKeyDown" @blur="onBlur">
+      <h4 contenteditable id="e" ref="email" @keydown="onKeyDown" @blur="onBlur" @click="setFocus($event)">
         {{ contact.e }}
       </h4>
     </div>
@@ -106,6 +107,13 @@ export default {
       this.$nextTick(() => {
         this.$refs.input.focus();
       });
+    },
+    setFocus({target}){
+        var range = document.createRange();
+        range.selectNodeContents(target);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
     },
     onBack() {
       this.$router.push("/contacts");

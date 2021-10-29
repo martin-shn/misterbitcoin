@@ -3,7 +3,7 @@
     <h4>Transfer coins to {{ user.n }}:</h4>
     <div class="flex align-center">
       <label for="amount">Amount:</label>
-      <input id="amount" type="number" v-model.number="amount" />
+      <input id="amount" type="number" ref="input" v-model.number="amount" @click="setFocus('input')"/>
       <button @click="onTransfer">Transfer</button>
     </div>
   </section>
@@ -30,6 +30,9 @@ export default {
           showMsg(err, 'error')
         }
     },
+    setFocus(refName){
+      eval(`this.$refs.${refName}.select()`)
+    }
   },
 };
 </script>
@@ -41,6 +44,7 @@ export default {
     margin: 25px 10px 0;
     border-radius: 2px;
     width: calc(100% - 22px);
+    max-width: 300px;
     align-items: center;
     box-sizing: border-box;
     h4{
